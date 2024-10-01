@@ -37,6 +37,7 @@ dependencies = [
     "matcha-tts",
     "flash-attn>=2.6.3",
     "numpy>=2.0.2",
+    "pyarrow>=17.0.0",
 ]
 
 [build-system]
