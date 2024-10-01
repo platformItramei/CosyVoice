@@ -20,6 +20,7 @@ import math
 from typing import Tuple
 
 import torch
+from flash_attn import flash_attn_func
 from torch import nn
 
 
@@ -73,9 +74,9 @@ class MultiHeadedAttention(nn.Module):
         q = self.linear_q(query).view(n_batch, -1, self.h, self.d_k)
         k = self.linear_k(key).view(n_batch, -1, self.h, self.d_k)
         v = self.linear_v(value).view(n_batch, -1, self.h, self.d_k)
-        q = q.transpose(1, 2)  # (batch, head, time1, d_k)
-        k = k.transpose(1, 2)  # (batch, head, time2, d_k)
-        v = v.transpose(1, 2)  # (batch, head, time2, d_k)
+        # q = q.transpose(1, 2)  # (batch, head, time1, d_k)
+        # k = k.transpose(1, 2)  # (batch, head, time2, d_k)
+        # v = v.transpose(1, 2)  # (batch, head, time2, d_k)
 
         return q, k, v
 
@@ -193,8 +194,18 @@ class MultiHeadedAttention(nn.Module):
         #   non-trivial to calculate `next_cache_start` here.
         new_cache = torch.cat((k, v), dim=-1)
 
-        scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.d_k)
-        return self.forward_attention(v, scores, mask), new_cache
+        # scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.d_k)
+        # return self.forward_attention(v, scores, mask), new_cache
+
+        outputs = flash_attn_func(
+            q,
+            k,
+            v,
+            causal=True
+        )
+        # outputs = flash_attn_qkvpacked_func(q, k, v, mask)
+        outputs = self.linear_out(outputs)
+        return outputs, new_cache
 
 
 class RelPositionMultiHeadedAttention(MultiHeadedAttention):
