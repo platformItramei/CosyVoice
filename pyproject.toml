@@ -36,10 +36,11 @@ dependencies = [
     "wget>=3.2",
     "matcha-tts",
     "flash-attn>=2.6.3",
+    "numpy>=2.0.2",
 ]
 
 [build-system]
-requires = ["hatchling", "torch"]
+requires = ["hatchling", "torch", "numpy"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
