@@ -27,7 +27,6 @@ dependencies = [
     "onnxruntime>=1.19.2",
     "onnxruntime-gpu>=1.19.2",
     "openai-whisper>=20240930",
-    "protobuf>=5.28.2",
     "pydantic>=2.9.2",
     "rich>=13.8.1",
     "soundfile>=0.12.1",
@@ -38,6 +37,7 @@ dependencies = [
     "wetextprocessing>=1.0.4.1",
     "wget>=3.2",
     "matcha-tts",
+    "flash-attn>=2.6.3",
 ]
 
 [build-system]
